@@ -320,6 +320,11 @@ button {
 #game-hud {
     justify-content: flex-start;
     padding: 2rem;
+    pointer-events: none;
+}
+
+#game-hud * {
+    pointer-events: auto;
 }
 
 .score-container {
