@@ -125,6 +125,21 @@ body {
     margin-top: 0.5rem;
 }
 
+@keyframes game-over-glow {
+    0% {
+        text-shadow: 
+            0 0 20px #ff3333,
+            0 0 30px #ff3333,
+            0 0 40px #ff3333;
+    }
+    100% {
+        text-shadow: 
+            0 0 30px #ff3333,
+            0 0 50px #ff3333,
+            0 0 70px #ff3333;
+    }
+}
+
 @keyframes title-flicker {
     0%, 92%, 100% {
         text-shadow: 
@@ -374,7 +389,13 @@ body {
     font-size: 3rem;
     text-shadow: 0 0 20px #ff3333;
     margin-bottom: 2rem;
-    animation: pulse 1s infinite;
+    animation: game-over-glow 0.5s infinite alternate;
+    transition: transform 0.8s ease-in;
+}
+
+.game-over-title.fall {
+    transform: rotate(20deg);
+    animation-delay: 2s;
 }
 
 .success-title {

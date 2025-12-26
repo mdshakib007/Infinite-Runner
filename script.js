@@ -539,6 +539,15 @@ class Game {
                     this.resumeGame();
                 }
             }
+            if (e.code === 'KeyR') {
+                this.startGame();
+            }
+            if (e.code === 'KeyS' && this.state === GAME_STATES.PAUSED) {
+                this.resumeGame();
+            }
+            if (e.code === 'KeyM') {
+                this.showMenu();
+            }
         });
 
         document.addEventListener('keyup', (e) => {
@@ -580,6 +589,13 @@ class Game {
         this.camera = new Camera();
         this.obstacleGenerator.reset();
         this.particles = [];
+        
+        // Reset game over title animation
+        const gameOverTitle = document.querySelector('.game-over-title');
+        if (gameOverTitle) {
+            gameOverTitle.classList.remove('fall');
+        }
+        
         this.showScreen('game-hud');
     }
 
@@ -646,9 +662,15 @@ class Game {
         document.getElementById('final-score').textContent = this.score;
         document.getElementById('final-distance').textContent = Math.floor(this.distance);
         
+        this.showScreen('game-over');
+        
+        // Add fall animation after 2 seconds
         setTimeout(() => {
-            this.showScreen('game-over');
-        }, 1000);
+            const gameOverTitle = document.querySelector('.game-over-title');
+            if (gameOverTitle) {
+                gameOverTitle.classList.add('fall');
+            }
+        }, 2000);
     }
 
     update() {
