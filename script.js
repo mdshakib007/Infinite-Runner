@@ -411,6 +411,7 @@ class Game {
         this.state = GAME_STATES.MENU;
         this.score = 0;
         this.highScore = localStorage.getItem('highScore') || 0;
+        this.highDistance = localStorage.getItem('highDistance') || 0;
         this.gameSpeed = 5;
         this.distance = 0;
         
@@ -444,6 +445,7 @@ class Game {
         
         // Update high score display
         document.getElementById('high-score').textContent = this.highScore;
+        document.getElementById('high-distance').textContent = this.highDistance;
     }
 
     setupInput() {
@@ -452,7 +454,9 @@ class Game {
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space') {
                 e.preventDefault();
-                if (this.state === GAME_STATES.PLAYING && !isJumping) {
+                if (this.state === GAME_STATES.MENU) {
+                    this.startGame();
+                } else if (this.state === GAME_STATES.PLAYING && !isJumping) {
                     this.player.jump();
                     isJumping = true;
                 }
@@ -538,10 +542,15 @@ class Game {
         this.state = GAME_STATES.GAME_OVER;
         this.camera.addShake(20);
         
-        // Update high score
+        // Update high score and distance
         if (this.score > this.highScore) {
             this.highScore = this.score;
             localStorage.setItem('highScore', this.highScore);
+        }
+        
+        if (this.distance > this.highDistance) {
+            this.highDistance = Math.floor(this.distance);
+            localStorage.setItem('highDistance', this.highDistance);
         }
         
         // Screen shake

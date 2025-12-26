@@ -58,44 +58,156 @@ body {
 }
 
 /* Neon Logo */
+.game-logo {
+    text-align: center;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.logo-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid #00ffdd;
+    box-shadow: 
+        0 0 20px rgba(0, 255, 221, 0.6),
+        inset 0 0 20px rgba(0, 255, 221, 0.2);
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+    0% { 
+        box-shadow: 
+            0 0 20px rgba(0, 255, 221, 0.6),
+            inset 0 0 20px rgba(0, 255, 221, 0.2);
+    }
+    100% { 
+        box-shadow: 
+            0 0 40px rgba(0, 255, 221, 0.9),
+            inset 0 0 30px rgba(0, 255, 221, 0.4);
+    }
+}
+
 .logo-container {
     text-align: center;
     margin-bottom: 3rem;
 }
 
 .neon-logo {
-    font-size: 4rem;
+    font-size: 3.5rem;
     font-weight: bold;
-    color: #fff;
+    color: #00ffdd;
     text-shadow: 
-        0 0 5px #00ffff,
-        0 0 10px #00ffff,
-        0 0 15px #00ffff,
-        0 0 20px #00ffff;
-    animation: flicker 2s infinite alternate;
+        0 0 10px rgba(0, 255, 221, 0.8),
+        0 0 20px rgba(0, 255, 221, 0.6),
+        0 0 30px rgba(0, 255, 221, 0.4);
+    animation: text-glow 3s ease-in-out infinite alternate;
     margin: 0.5rem 0;
+    letter-spacing: 3px;
 }
 
-.neon-logo.dash {
-    color: #ff00ff;
+.neon-subtitle {
+    font-size: 1.2rem;
+    font-weight: normal;
+    color: #00ccaa;
     text-shadow: 
-        0 0 5px #ff00ff,
-        0 0 10px #ff00ff,
-        0 0 15px #ff00ff,
-        0 0 20px #ff00ff;
-    animation: flicker 2s infinite alternate-reverse;
+        0 0 5px rgba(0, 204, 170, 0.8),
+        0 0 10px rgba(0, 204, 170, 0.6);
+    animation: text-glow 3s ease-in-out infinite alternate-reverse;
+    letter-spacing: 2px;
+    margin-top: 0.5rem;
 }
 
-@keyframes flicker {
-    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+@keyframes text-glow {
+    0% { 
         text-shadow: 
-            0 0 5px currentColor,
-            0 0 10px currentColor,
-            0 0 15px currentColor,
-            0 0 20px currentColor;
+            0 0 10px rgba(0, 255, 221, 0.8),
+            0 0 20px rgba(0, 255, 221, 0.6),
+            0 0 30px rgba(0, 255, 221, 0.4);
     }
-    20%, 24%, 55% {
-        text-shadow: none;
+    100% { 
+        text-shadow: 
+            0 0 20px rgba(0, 255, 221, 1),
+            0 0 30px rgba(0, 255, 221, 0.8),
+            0 0 40px rgba(0, 255, 221, 0.6);
+    }
+}
+
+/* Floating Shapes Animation */
+.floating-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.shape {
+    position: absolute;
+    background: linear-gradient(45deg, #00ffdd, #00ccaa);
+    opacity: 0.1;
+    animation: float-shapes 8s ease-in-out infinite;
+}
+
+.shape1 {
+    width: 60px;
+    height: 60px;
+    top: 20%;
+    left: 10%;
+    border-radius: 50%;
+    animation-delay: 0s;
+}
+
+.shape2 {
+    width: 40px;
+    height: 40px;
+    top: 60%;
+    right: 15%;
+    transform: rotate(45deg);
+    animation-delay: 2s;
+}
+
+.shape3 {
+    width: 80px;
+    height: 80px;
+    bottom: 20%;
+    left: 20%;
+    border-radius: 20px;
+    animation-delay: 4s;
+}
+
+.shape4 {
+    width: 50px;
+    height: 50px;
+    top: 30%;
+    right: 30%;
+    border-radius: 50%;
+    animation-delay: 6s;
+}
+
+@keyframes float-shapes {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.1;
+    }
+    25% { 
+        transform: translateY(-20px) rotate(90deg);
+        opacity: 0.2;
+    }
+    50% { 
+        transform: translateY(-10px) rotate(180deg);
+        opacity: 0.15;
+    }
+    75% { 
+        transform: translateY(-30px) rotate(270deg);
+        opacity: 0.25;
     }
 }
 
@@ -109,8 +221,8 @@ body {
 
 .neon-btn {
     background: transparent;
-    border: 2px solid #00ffff;
-    color: #00ffff;
+    border: 2px solid #00ffdd;
+    color: #00ffdd;
     padding: 1rem 2rem;
     font-size: 1.2rem;
     font-family: inherit;
@@ -119,31 +231,45 @@ body {
     letter-spacing: 2px;
     transition: all 0.3s ease;
     box-shadow: 
-        0 0 10px rgba(0, 255, 255, 0.3),
-        inset 0 0 10px rgba(0, 255, 255, 0.1);
+        0 0 15px rgba(0, 255, 221, 0.4),
+        inset 0 0 15px rgba(0, 255, 221, 0.1);
+    animation: button-pulse 2s ease-in-out infinite;
 }
 
 .neon-btn:hover {
-    background: rgba(0, 255, 255, 0.1);
+    background: rgba(0, 255, 221, 0.1);
     box-shadow: 
-        0 0 20px rgba(0, 255, 255, 0.6),
-        inset 0 0 20px rgba(0, 255, 255, 0.2);
+        0 0 25px rgba(0, 255, 221, 0.7),
+        inset 0 0 25px rgba(0, 255, 221, 0.2);
     transform: scale(1.05);
 }
 
+@keyframes button-pulse {
+    0%, 100% { 
+        box-shadow: 
+            0 0 15px rgba(0, 255, 221, 0.4),
+            inset 0 0 15px rgba(0, 255, 221, 0.1);
+    }
+    50% { 
+        box-shadow: 
+            0 0 20px rgba(0, 255, 221, 0.6),
+            inset 0 0 20px rgba(0, 255, 221, 0.15);
+    }
+}
+
 .neon-btn.secondary {
-    border-color: #ff00ff;
-    color: #ff00ff;
+    border-color: #00ccaa;
+    color: #00ccaa;
     box-shadow: 
-        0 0 10px rgba(255, 0, 255, 0.3),
-        inset 0 0 10px rgba(255, 0, 255, 0.1);
+        0 0 15px rgba(0, 204, 170, 0.4),
+        inset 0 0 15px rgba(0, 204, 170, 0.1);
 }
 
 .neon-btn.secondary:hover {
-    background: rgba(255, 0, 255, 0.1);
+    background: rgba(0, 204, 170, 0.1);
     box-shadow: 
-        0 0 20px rgba(255, 0, 255, 0.6),
-        inset 0 0 20px rgba(255, 0, 255, 0.2);
+        0 0 25px rgba(0, 204, 170, 0.7),
+        inset 0 0 25px rgba(0, 204, 170, 0.2);
 }
 
 /* Game HUD */
@@ -165,24 +291,39 @@ body {
     background: rgba(0, 0, 0, 0.8);
     padding: 8px 15px;
     border-radius: 20px;
-    border: 2px solid #00ffff;
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+    border: 2px solid #00ffdd;
+    box-shadow: 0 0 15px rgba(0, 255, 221, 0.5);
     color: #ffffff;
     font-weight: bold;
     font-size: 16px;
 }
 
 .score-label {
-    color: #00ffff;
+    color: #00ffdd;
     font-weight: bold;
     margin-right: 10px;
 }
 
-.high-score {
+.high-scores {
     margin-top: 20px;
-    color: #ffff00;
-    font-size: 18px;
-    text-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+    text-align: center;
+}
+
+.high-scores p {
+    color: #00ffdd;
+    font-size: 16px;
+    text-shadow: 0 0 10px rgba(0, 255, 221, 0.8);
+    margin: 5px 0;
+    animation: score-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes score-glow {
+    0% { 
+        text-shadow: 0 0 10px rgba(0, 255, 221, 0.8);
+    }
+    100% { 
+        text-shadow: 0 0 15px rgba(0, 255, 221, 1);
+    }
 }
 
 .hud-btn {
@@ -190,8 +331,8 @@ body {
     top: 2rem;
     right: 2rem;
     background: transparent;
-    border: 1px solid #00ffff;
-    color: #00ffff;
+    border: 1px solid #00ffdd;
+    color: #00ffdd;
     padding: 0.5rem;
     font-size: 1.2rem;
     cursor: pointer;
@@ -200,8 +341,8 @@ body {
 }
 
 .hud-btn:hover {
-    background: rgba(0, 255, 255, 0.1);
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    background: rgba(0, 255, 221, 0.1);
+    box-shadow: 0 0 10px rgba(0, 255, 221, 0.5);
 }
 
 /* Game Over & Complete Screens */
