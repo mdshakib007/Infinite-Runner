@@ -112,6 +112,8 @@ class Player {
         if (this.onGround) {
             this.velocityY = CONFIG.JUMP_FORCE;
             this.onGround = false;
+            // Play jump sound
+            if (window.game) window.game.playSound('jump');
         }
     }
 
@@ -490,6 +492,7 @@ class Game {
         this.backgroundOffset = 0;
         
         this.setupUI();
+        this.setupAudio();
         this.setupInput();
         
         this.gameLoop();
@@ -503,18 +506,38 @@ class Game {
     }
 
     setupUI() {
-        document.getElementById('play-btn').onclick = () => this.startGame();
-        document.getElementById('retry-btn').onclick = () => this.startGame();
-        document.getElementById('pause-btn').onclick = () => this.pauseGame();
-        document.getElementById('resume-btn').onclick = () => this.resumeGame();
-        document.getElementById('restart-btn').onclick = () => this.startGame();
+        document.getElementById('play-btn').onclick = () => { this.playSound('click'); this.startGame(); };
+        document.getElementById('retry-btn').onclick = () => { this.playSound('click'); this.startGame(); };
+        document.getElementById('pause-btn').onclick = () => { this.playSound('click'); this.pauseGame(); };
+        document.getElementById('resume-btn').onclick = () => { this.playSound('click'); this.resumeGame(); };
+        document.getElementById('restart-btn').onclick = () => { this.playSound('click'); this.startGame(); };
         
         const menuBtns = document.querySelectorAll('#menu-btn, #menu-btn-2, #menu-btn-3');
-        menuBtns.forEach(btn => btn.onclick = () => this.showMenu());
+        menuBtns.forEach(btn => btn.onclick = () => { this.playSound('click'); this.showMenu(); });
         
         // Update high score display
         document.getElementById('high-score').textContent = this.highScore;
         document.getElementById('high-distance').textContent = this.highDistance;
+    }
+
+    setupAudio() {
+        this.sounds = {
+            jump: new Audio('jump.mp3'),
+            click: new Audio('click.mp3')
+        };
+        
+        // Set volume levels
+        Object.values(this.sounds).forEach(sound => {
+            sound.volume = 0.3;
+            sound.preload = 'auto';
+        });
+    }
+
+    playSound(soundName) {
+        if (this.sounds[soundName]) {
+            this.sounds[soundName].currentTime = 0;
+            this.sounds[soundName].play().catch(() => {});
+        }
     }
 
     setupInput() {
@@ -852,7 +875,7 @@ class Game {
 
 // Initialize game when page loads
 window.addEventListener('load', () => {
-    new Game();
+    window.game = new Game();
 });
 
 // Handle window resize
