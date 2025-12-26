@@ -7,8 +7,15 @@ const CONFIG = {
     GROUND_HEIGHT: 100,
     PLAYER_SIZE: 40,
     MIN_OBSTACLE_DISTANCE: 200,
-    MAX_OBSTACLE_DISTANCE: 400
+    MAX_OBSTACLE_DISTANCE: 400,
+    // Mobile detection
+    IS_MOBILE: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768
 };
+
+// Adjust ground height for mobile (50% of screen height)
+if (CONFIG.IS_MOBILE) {
+    CONFIG.GROUND_HEIGHT = CONFIG.CANVAS_HEIGHT * 0.5;
+}
 
 // Game States
 const GAME_STATES = {
@@ -588,10 +595,11 @@ class Game {
             }
         });
 
-        // Mouse/touch controls - works for jump and menu navigation
+        // Mouse/touch controls - only for canvas area and only when game is playing
         let isMouseDown = false;
         
-        const handleJump = () => {
+        const handleJump = (e) => {
+            // Only handle jump if game is playing
             if (this.state === GAME_STATES.PLAYING) {
                 this.player.jump();
                 isMouseDown = true;
@@ -606,15 +614,25 @@ class Game {
             isMouseDown = false;
         };
         
-        // Mouse events
+        // Mouse events - only on canvas
         this.canvas.addEventListener('mousedown', handleJump);
         this.canvas.addEventListener('mouseup', handleRelease);
         
-        // Touch events for mobile
+        // Touch events for mobile - only on canvas and only when appropriate
         this.canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            handleJump();
+            
+            // Check if touch is on a UI button
+            const touch = e.touches[0];
+            const element = document.elementFromPoint(touch.clientX, touch.clientY);
+            
+            // Don't handle jump if touching a button or UI element
+            if (element && (element.tagName === 'BUTTON' || element.closest('button') || element.closest('.screen:not(#game-hud)'))) {
+                return;
+            }
+            
+            handleJump(e);
         }, { passive: false });
         
         this.canvas.addEventListener('touchend', (e) => {
@@ -623,12 +641,9 @@ class Game {
             handleRelease();
         }, { passive: false });
 
-        // Fallback touch handler for mobile
-        document.addEventListener('touchstart', (e) => {
-            if (this.state === GAME_STATES.PLAYING || this.state === GAME_STATES.MENU || this.state === GAME_STATES.GAME_OVER) {
-                e.preventDefault();
-                handleJump();
-            }
+        // Prevent default touch behavior on the entire document to avoid scrolling
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
         }, { passive: false });
 
         // Continuous input for ship mode
@@ -882,6 +897,15 @@ window.addEventListener('load', () => {
 window.addEventListener('resize', () => {
     CONFIG.CANVAS_WIDTH = window.innerWidth;
     CONFIG.CANVAS_HEIGHT = window.innerHeight;
+    
+    // Update mobile detection and ground height
+    CONFIG.IS_MOBILE = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+    
+    if (CONFIG.IS_MOBILE) {
+        CONFIG.GROUND_HEIGHT = CONFIG.CANVAS_HEIGHT * 0.5;
+    } else {
+        CONFIG.GROUND_HEIGHT = 100;
+    }
     
     const canvas = document.getElementById('gameCanvas');
     if (canvas) {
