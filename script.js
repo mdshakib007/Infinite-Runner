@@ -207,12 +207,12 @@ class ObstacleGenerator {
         this.nextObstacleX = CONFIG.CANVAS_WIDTH;
         this.obstacleTypes = [
             // Ground obstacles
-            { type: 'spike', width: 40, height: 60, color: '#ff3333', ground: true },
+            { type: 'spike', width: 40, height: 60, color: '#02ff70ff', ground: true, glow: true },
             { type: 'cube', width: 50, height: 50, color: '#8844ff', ground: true, filled: true },
             { type: 'cube', width: 50, height: 50, color: '#4488ff', ground: true, filled: false },
             { type: 'orb', width: 35, height: 35, color: '#ffff00', ground: true, glow: true },
             { type: 'robot', width: 45, height: 55, color: '#00ff88', ground: true },
-            { type: 'ship', width: 60, height: 35, color: '#ff8800', ground: true },
+            { type: 'ship', width: 60, height: 35, color: '#ff8800', ground: true },    
             { type: 'ball', width: 40, height: 40, color: '#ff44ff', ground: true },
             { type: 'wave', width: 55, height: 30, color: '#44ffff', ground: true },
             { type: 'spider', width: 50, height: 40, color: '#ff4444', ground: true },
@@ -532,6 +532,11 @@ class Game {
                     isJumping = true;
                 }
             }
+            if (e.code === 'KeyP') {
+                if (this.state === GAME_STATES.MENU) {
+                    this.startGame();
+                }
+            }
             if (e.code === 'Escape') {
                 if (this.state === GAME_STATES.PLAYING) {
                     this.pauseGame();
@@ -540,10 +545,14 @@ class Game {
                 }
             }
             if (e.code === 'KeyR') {
-                this.startGame();
+                if (this.state === GAME_STATES.GAME_OVER) {
+                    this.startGame();
+                } else if (this.state === GAME_STATES.PAUSED) {
+                    this.resumeGame();
+                }
             }
             if (e.code === 'KeyS' && this.state === GAME_STATES.PAUSED) {
-                this.resumeGame();
+                this.startGame();
             }
             if (e.code === 'KeyM') {
                 this.showMenu();
@@ -556,18 +565,37 @@ class Game {
             }
         });
 
-        // Mouse/touch controls
+        // Mouse/touch controls - works for jump and menu navigation
         let isMouseDown = false;
         
-        this.canvas.addEventListener('mousedown', () => {
+        const handleJump = () => {
             if (this.state === GAME_STATES.PLAYING) {
                 this.player.jump();
                 isMouseDown = true;
+            } else if (this.state === GAME_STATES.MENU) {
+                this.startGame();
+            } else if (this.state === GAME_STATES.GAME_OVER) {
+                this.startGame();
             }
+        };
+        
+        const handleRelease = () => {
+            isMouseDown = false;
+        };
+        
+        // Mouse events
+        this.canvas.addEventListener('mousedown', handleJump);
+        this.canvas.addEventListener('mouseup', handleRelease);
+        
+        // Touch events for mobile
+        this.canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleJump();
         });
         
-        this.canvas.addEventListener('mouseup', () => {
-            isMouseDown = false;
+        this.canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            handleRelease();
         });
 
         // Continuous input for ship mode
