@@ -627,8 +627,8 @@ class Game {
             const touch = e.touches[0];
             const element = document.elementFromPoint(touch.clientX, touch.clientY);
             
-            // Don't handle jump if touching a button or UI element
-            if (element && (element.tagName === 'BUTTON' || element.closest('button') || element.closest('.screen:not(#game-hud)'))) {
+            // Don't handle jump if touching a button
+            if (element && (element.tagName === 'BUTTON' || element.closest('button'))) {
                 return;
             }
             
