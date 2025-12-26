@@ -590,13 +590,23 @@ class Game {
         // Touch events for mobile
         this.canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             handleJump();
-        });
+        }, { passive: false });
         
         this.canvas.addEventListener('touchend', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             handleRelease();
-        });
+        }, { passive: false });
+
+        // Fallback touch handler for mobile
+        document.addEventListener('touchstart', (e) => {
+            if (this.state === GAME_STATES.PLAYING || this.state === GAME_STATES.MENU || this.state === GAME_STATES.GAME_OVER) {
+                e.preventDefault();
+                handleJump();
+            }
+        }, { passive: false });
 
         // Continuous input for ship mode
         setInterval(() => {
