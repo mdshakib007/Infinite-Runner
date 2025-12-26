@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Runner - Neon Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="infinite-runner.png" type="image/x-icon">
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- UI Overlay -->
+        <div id="ui-overlay">
+            <!-- Start Menu -->
+            <div id="start-menu" class="screen active">
+                <div class="logo-container">
+                    <h1 class="neon-logo" data-text="INFINITE">INFINITE</h1>
+                    <h1 class="neon-logo dash" data-text="RUNNER">RUNNER</h1>
+                </div>
+                <div class="menu-buttons">
+                    <button id="play-btn" class="neon-btn">PLAY</button>
+                    <div class="controls">
+                        <p>SPACE / CLICK to Jump</p>
+                        <p>ESC to Pause</p>
+                    </div>
+                    <div class="high-score">
+                        <p>High Score: <span id="high-score">0</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game HUD -->
+            <div id="game-hud" class="screen">
+                <div class="score-container">
+                    <div class="score-item">
+                        <span class="score-label">Score:</span>
+                        <span id="current-score">0</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-label">Distance:</span>
+                        <span id="current-distance">0</span>m
+                    </div>
+                </div>
+                <button id="pause-btn" class="hud-btn">⏸</button>
+            </div>
+
+            <!-- Game Over -->
+            <div id="game-over" class="screen">
+                <h2 class="game-over-title">GAME OVER</h2>
+                <div class="stats">
+                    <p>Final Score: <span id="final-score">0</span></p>
+                    <p>Distance: <span id="final-distance">0</span>m</p>
+                </div>
+                <div class="menu-buttons">
+                    <button id="retry-btn" class="neon-btn">RETRY</button>
+                    <button id="menu-btn" class="neon-btn secondary">MENU</button>
+                </div>
+            </div>
+
+            <!-- Pause Menu -->
+            <div id="pause-menu" class="screen">
+                <h2>PAUSED</h2>
+                <div class="menu-buttons">
+                    <button id="resume-btn" class="neon-btn">RESUME</button>
+                    <button id="restart-btn" class="neon-btn secondary">RESTART</button>
+                    <button id="menu-btn-3" class="neon-btn secondary">MENU</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
