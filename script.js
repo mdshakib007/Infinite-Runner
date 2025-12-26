@@ -206,13 +206,21 @@ class ObstacleGenerator {
         this.obstacles = [];
         this.nextObstacleX = CONFIG.CANVAS_WIDTH;
         this.obstacleTypes = [
+            // Ground obstacles
             { type: 'spike', width: 40, height: 60, color: '#ff3333', ground: true },
-            { type: 'cactus', width: 50, height: 80, color: '#00ff00', ground: true },
-            { type: 'block', width: 60, height: 40, color: '#8844ff', ground: true },
-            { type: 'bird', width: 45, height: 30, color: '#ffaa00', ground: false },
-            { type: 'bomb', width: 35, height: 35, color: '#ff0000', ground: false },
-            { type: 'star', width: 40, height: 40, color: '#ffff00', ground: false },
-            { type: 'plane', width: 70, height: 25, color: '#aaaaaa', ground: false }
+            { type: 'cube', width: 50, height: 50, color: '#8844ff', ground: true, filled: true },
+            { type: 'cube', width: 50, height: 50, color: '#4488ff', ground: true, filled: false },
+            { type: 'orb', width: 35, height: 35, color: '#ffff00', ground: true, glow: true },
+            { type: 'robot', width: 45, height: 55, color: '#00ff88', ground: true },
+            { type: 'ship', width: 60, height: 35, color: '#ff8800', ground: true },
+            { type: 'ball', width: 40, height: 40, color: '#ff44ff', ground: true },
+            { type: 'wave', width: 55, height: 30, color: '#44ffff', ground: true },
+            { type: 'spider', width: 50, height: 40, color: '#ff4444', ground: true },
+            { type: 'swing', width: 45, height: 50, color: '#88ff44', ground: true },
+            // Sky obstacles  
+            { type: 'ufo', width: 60, height: 25, color: '#aaaaaa', ground: false },
+            { type: 'star', width: 30, height: 30, color: '#ffff00', ground: false, glow: true },
+            { type: 'star', width: 20, height: 20, color: '#ffff88', ground: false, glow: true }
         ];
     }
 
@@ -276,7 +284,7 @@ class ObstacleGenerator {
             if (drawX < -200 || drawX > CONFIG.CANVAS_WIDTH + 200) return;
 
             ctx.save();
-            ctx.shadowBlur = 20;
+            ctx.shadowBlur = obstacle.glow ? 30 : 20;
             ctx.shadowColor = obstacle.color;
             ctx.fillStyle = obstacle.color;
 
@@ -290,25 +298,104 @@ class ObstacleGenerator {
                     ctx.fill();
                     break;
 
-                case 'bird':
-                    // Flying bird
-                    ctx.fillRect(drawX, obstacle.y, obstacle.width * 0.6, obstacle.height * 0.4);
-                    ctx.fillRect(drawX + obstacle.width * 0.2, obstacle.y - 5, obstacle.width * 0.3, obstacle.height * 0.6);
-                    ctx.fillRect(drawX + obstacle.width * 0.6, obstacle.y + 5, obstacle.width * 0.3, obstacle.height * 0.3);
+                case 'cube':
+                    if (obstacle.filled) {
+                        ctx.fillRect(drawX, obstacle.y, obstacle.width, obstacle.height);
+                    } else {
+                        ctx.strokeStyle = obstacle.color;
+                        ctx.lineWidth = 3;
+                        ctx.strokeRect(drawX, obstacle.y, obstacle.width, obstacle.height);
+                    }
                     break;
 
-                case 'bomb':
-                    // Round bomb
+                case 'orb':
                     ctx.beginPath();
                     ctx.arc(drawX + obstacle.width/2, obstacle.y + obstacle.height/2, obstacle.width/2, 0, Math.PI * 2);
                     ctx.fill();
-                    // Fuse
+                    break;
+
+                case 'robot':
+                    // Body
+                    ctx.fillRect(drawX + 10, obstacle.y + 15, obstacle.width - 20, obstacle.height - 15);
+                    // Head
+                    ctx.fillRect(drawX + 15, obstacle.y, obstacle.width - 30, 20);
+                    // Arms
+                    ctx.fillRect(drawX + 5, obstacle.y + 20, 8, 15);
+                    ctx.fillRect(drawX + obstacle.width - 13, obstacle.y + 20, 8, 15);
+                    break;
+
+                case 'ship':
+                    // Main body
+                    ctx.fillRect(drawX, obstacle.y + obstacle.height/3, obstacle.width * 0.7, obstacle.height/3);
+                    // Nose
+                    ctx.beginPath();
+                    ctx.moveTo(drawX + obstacle.width * 0.7, obstacle.y + obstacle.height/3);
+                    ctx.lineTo(drawX + obstacle.width, obstacle.y + obstacle.height/2);
+                    ctx.lineTo(drawX + obstacle.width * 0.7, obstacle.y + obstacle.height * 2/3);
+                    ctx.fill();
+                    break;
+
+                case 'ball':
+                    ctx.beginPath();
+                    ctx.arc(drawX + obstacle.width/2, obstacle.y + obstacle.height/2, obstacle.width/2, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Inner circle
                     ctx.strokeStyle = '#ffffff';
-                    ctx.lineWidth = 3;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(drawX + obstacle.width/2, obstacle.y + obstacle.height/2, obstacle.width/3, 0, Math.PI * 2);
+                    ctx.stroke();
+                    break;
+
+                case 'wave':
+                    ctx.beginPath();
+                    for (let i = 0; i < obstacle.width; i += 5) {
+                        const waveY = obstacle.y + obstacle.height/2 + Math.sin(i * 0.3) * 10;
+                        if (i === 0) ctx.moveTo(drawX + i, waveY);
+                        else ctx.lineTo(drawX + i, waveY);
+                    }
+                    ctx.strokeStyle = obstacle.color;
+                    ctx.lineWidth = 4;
+                    ctx.stroke();
+                    break;
+
+                case 'spider':
+                    // Body
+                    ctx.fillRect(drawX + 15, obstacle.y + 10, obstacle.width - 30, obstacle.height - 20);
+                    // Legs
+                    for (let i = 0; i < 4; i++) {
+                        ctx.strokeStyle = obstacle.color;
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.moveTo(drawX + 15, obstacle.y + 15 + i * 5);
+                        ctx.lineTo(drawX + 5, obstacle.y + 20 + i * 3);
+                        ctx.moveTo(drawX + obstacle.width - 15, obstacle.y + 15 + i * 5);
+                        ctx.lineTo(drawX + obstacle.width - 5, obstacle.y + 20 + i * 3);
+                        ctx.stroke();
+                    }
+                    break;
+
+                case 'swing':
+                    // Chain
+                    ctx.strokeStyle = '#888888';
+                    ctx.lineWidth = 2;
                     ctx.beginPath();
                     ctx.moveTo(drawX + obstacle.width/2, obstacle.y);
-                    ctx.lineTo(drawX + obstacle.width/2 - 10, obstacle.y - 15);
+                    ctx.lineTo(drawX + obstacle.width/2, obstacle.y + obstacle.height - 15);
                     ctx.stroke();
+                    // Swing seat
+                    ctx.fillRect(drawX + 10, obstacle.y + obstacle.height - 15, obstacle.width - 20, 15);
+                    break;
+
+                case 'ufo':
+                    // Main disc
+                    ctx.beginPath();
+                    ctx.ellipse(drawX + obstacle.width/2, obstacle.y + obstacle.height/2, obstacle.width/2, obstacle.height/3, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Top dome
+                    ctx.beginPath();
+                    ctx.ellipse(drawX + obstacle.width/2, obstacle.y + obstacle.height/3, obstacle.width/3, obstacle.height/4, 0, 0, Math.PI * 2);
+                    ctx.fill();
                     break;
 
                 case 'star':
@@ -329,25 +416,6 @@ class ObstacleGenerator {
                     ctx.closePath();
                     ctx.fill();
                     break;
-
-                case 'plane':
-                    // Simple plane shape
-                    ctx.fillRect(drawX, obstacle.y + obstacle.height/3, obstacle.width * 0.7, obstacle.height/3);
-                    ctx.fillRect(drawX + obstacle.width * 0.6, obstacle.y, obstacle.width * 0.4, obstacle.height);
-                    ctx.fillRect(drawX + obstacle.width * 0.2, obstacle.y + obstacle.height * 0.6, obstacle.width * 0.3, obstacle.height * 0.2);
-                    break;
-
-                case 'cactus':
-                    // Main body
-                    ctx.fillRect(drawX + obstacle.width/3, obstacle.y, obstacle.width/3, obstacle.height);
-                    // Arms
-                    ctx.fillRect(drawX + 5, obstacle.y + obstacle.height/3, obstacle.width/4, obstacle.height/3);
-                    ctx.fillRect(drawX + obstacle.width - obstacle.width/4 - 5, obstacle.y + obstacle.height/2, obstacle.width/4, obstacle.height/4);
-                    break;
-
-                case 'block':
-                    ctx.fillRect(drawX, obstacle.y, obstacle.width, obstacle.height);
-                    ctx.strokeStyle = '#ffffff';
                     ctx.lineWidth = 2;
                     ctx.strokeRect(drawX, obstacle.y, obstacle.width, obstacle.height);
                     break;
@@ -419,6 +487,7 @@ class Game {
         this.camera = new Camera();
         this.obstacleGenerator = new ObstacleGenerator();
         this.particles = [];
+        this.backgroundOffset = 0;
         
         this.setupUI();
         this.setupInput();
@@ -455,6 +524,8 @@ class Game {
             if (e.code === 'Space') {
                 e.preventDefault();
                 if (this.state === GAME_STATES.MENU) {
+                    this.startGame();
+                } else if (this.state === GAME_STATES.GAME_OVER) {
                     this.startGame();
                 } else if (this.state === GAME_STATES.PLAYING && !isJumping) {
                     this.player.jump();
@@ -593,6 +664,9 @@ class Game {
         // Update distance and speed (slower distance calculation)
         this.distance += this.gameSpeed * 0.1; // Much slower distance
         this.gameSpeed = Math.min(5 + this.distance / 500, 10); // Slower speed increase
+        
+        // Update background offset (slower than ground)
+        this.backgroundOffset += this.gameSpeed * 0.3;
 
         // Update score
         this.score = Math.floor(this.distance / 10);
@@ -633,6 +707,9 @@ class Game {
 
         const cameraOffset = this.camera.getShakeOffset();
 
+        // Draw background elements (moon, stars)
+        this.drawBackground();
+
         // Draw ground
         this.drawGround();
 
@@ -644,6 +721,29 @@ class Game {
 
         // Draw player
         this.player.draw(this.ctx);
+    }
+
+    drawBackground() {
+        // Moon
+        this.ctx.save();
+        this.ctx.fillStyle = '#ffffcc';
+        this.ctx.shadowBlur = 30;
+        this.ctx.shadowColor = '#ffffcc';
+        const moonX = 150 - (this.backgroundOffset * 0.1) % (CONFIG.CANVAS_WIDTH + 200);
+        this.ctx.beginPath();
+        this.ctx.arc(moonX, 80, 40, 0, Math.PI * 2);
+        this.ctx.fill();
+        this.ctx.restore();
+
+        // Background stars
+        this.ctx.fillStyle = '#ffffff';
+        for (let i = 0; i < 20; i++) {
+            const starX = (i * 100 - (this.backgroundOffset * 0.2)) % (CONFIG.CANVAS_WIDTH + 100);
+            const starY = 50 + (i * 17) % 150;
+            this.ctx.beginPath();
+            this.ctx.arc(starX, starY, 1 + (i % 3), 0, Math.PI * 2);
+            this.ctx.fill();
+        }
     }
 
     drawGround(cameraOffset) {
