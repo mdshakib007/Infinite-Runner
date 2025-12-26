@@ -724,21 +724,25 @@ class Game {
     }
 
     drawBackground() {
-        // Moon
+        // Moon - continuous loop
         this.ctx.save();
         this.ctx.fillStyle = '#ffffcc';
         this.ctx.shadowBlur = 30;
         this.ctx.shadowColor = '#ffffcc';
-        const moonX = 150 - (this.backgroundOffset * 0.1) % (CONFIG.CANVAS_WIDTH + 200);
+        const moonCycle = CONFIG.CANVAS_WIDTH + 200;
+        const moonX = 150 - (this.backgroundOffset * 0.1) % moonCycle;
+        const adjustedMoonX = moonX < -100 ? moonX + moonCycle : moonX;
         this.ctx.beginPath();
-        this.ctx.arc(moonX, 80, 40, 0, Math.PI * 2);
+        this.ctx.arc(adjustedMoonX, 80, 40, 0, Math.PI * 2);
         this.ctx.fill();
         this.ctx.restore();
 
-        // Background stars
+        // Background stars - continuous loop
         this.ctx.fillStyle = '#ffffff';
+        const starCycle = CONFIG.CANVAS_WIDTH + 100;
         for (let i = 0; i < 20; i++) {
-            const starX = (i * 100 - (this.backgroundOffset * 0.2)) % (CONFIG.CANVAS_WIDTH + 100);
+            const baseStarX = (i * 100 - (this.backgroundOffset * 0.2)) % starCycle;
+            const starX = baseStarX < -50 ? baseStarX + starCycle : baseStarX;
             const starY = 50 + (i * 17) % 150;
             this.ctx.beginPath();
             this.ctx.arc(starX, starY, 1 + (i % 3), 0, Math.PI * 2);
